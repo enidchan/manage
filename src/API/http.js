@@ -18,5 +18,15 @@ export const login = ( { username,password} )=>{
     })
 }
 
+// 封装获取左右路由权限的方法
+export const menus = ()=>{
+  // 需要拿到token
+   return http.get('menus',{
+     headers : {
+      //  key :value
+       Authorization: window.localStorage.getItem('token')
+     }
+   })
+}
 
 

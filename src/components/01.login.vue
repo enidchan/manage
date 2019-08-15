@@ -74,8 +74,8 @@ export default {
             // console.log(res);
             if (res.data.meta.status == 200) {
               this.$message.success({
-                message:"登录成功!",
-                duration:1500
+                message:res.data.meta.msg,
+                duration:1000
               });
               // 在跳转之前先保存一下token
               window.localStorage.setItem("token",res.data.data.token)

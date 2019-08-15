@@ -4,7 +4,7 @@
     <el-header class="my_header">
       <img src="../assets/logo.png" alt />
       <h2>黑马后台管理系统</h2>
-      <a href="#">退出</a>
+      <a href="#" @click.prevent="logout">退出</a>
     </el-header>
 
     <el-container class="sub_container">
@@ -19,7 +19,7 @@
               <span>{{item.authName}}</span>
             </template>
 
-            <el-menu-item v-for="subItem in item.children" :index="subItem.path">
+            <el-menu-item v-for="subItem in item.children" :index="'index/'+ subItem.path">
               <i class="el-icon-menu"></i> {{subItem.authName}}
             </el-menu-item>
             </el-menu-item>
@@ -27,9 +27,12 @@
         </el-menu>
       </el-aside>
       <!-- 右边主体部分 -->
+
       <el-main class="my_main">
+        <!-- 放子路由 -->
         <router-view></router-view>
       </el-main>
+
     </el-container>
   </el-container>
 </template>
@@ -38,14 +41,43 @@
 import {menus} from "../API/http"
 
 export default {
+  name: 'index',
+
   data() {
     return {
       menuList:[]
     }
   },
+  methods: {
+    logout(){
+      // element-ui的弹框
+      this.$confirm('是否退出', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+
+        }).then(() => {
+          this.$message({
+            type: 'success',
+            message: '退出成功!',
+            duration:1000
+          });
+          // 删除token
+            window.localStorage.removeItem("token");
+            // 跳转回login
+            this.$router.push('/login');
+
+        }).catch(() => {
+          this.$message({ 
+            type: 'info',
+            message: '看来你还是舍不得我'
+          });          
+        });
+    }
+  },
   created() {
     menus().then(res=>{
-      console.log(res);
+      // console.log(res);
       this.menuList = res.data.data;
       
     })

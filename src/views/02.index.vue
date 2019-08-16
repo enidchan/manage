@@ -19,7 +19,7 @@
               <span>{{item.authName}}</span>
             </template>
 
-            <el-menu-item v-for="subItem in item.children" :index="'index/'+ subItem.path">
+            <el-menu-item v-for="subItem in item.children" :index="subItem.path">
               <i class="el-icon-menu"></i> {{subItem.authName}}
             </el-menu-item>
             </el-menu-item>
@@ -105,6 +105,7 @@ export default {
   }
   .my_main {
     background-color: #e9eef3;
+    padding: 0 15px;
   }
 }
 </style>

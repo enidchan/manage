@@ -7,16 +7,16 @@ import VueRouter from "vue-router"
 Vue.use(VueRouter)
 
 // 导入组件
-import login from "../components/01.login.vue"
-import index from "../components/02.index.vue"
-import userlist from "../components/userlist.vue"
+import login from "../views/01.login.vue"
+import index from "../views/02.index.vue"
+import userlist from "../views/03.userlist.vue"
 
 // 路由规则
 const routes = [
   { path:"/login", component: login },
   { path:"/index", component: index,
   children:[
-    { path: "users", component: userlist }
+    { path: "/users", component: userlist }
   ]
   },
 

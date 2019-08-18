@@ -10,6 +10,10 @@ import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
 Vue.use(ElementUI);
 
+// 导入面包屑的组件
+import bread from "./components/bread.vue"
+Vue.component('bread',bread)
+
 // 导入封装好的路由
 import router from "./router/router"
 

@@ -10,13 +10,15 @@ Vue.use(VueRouter)
 import login from "../views/01.login.vue"
 import index from "../views/02.index.vue"
 import userlist from "../views/03.userlist.vue"
+import rightlist from "../views/04.rightlist.vue"
 
 // 路由规则
 const routes = [
   { path:"/login", component: login },
   { path:"/index", component: index,
   children:[
-    { path: "/users", component: userlist }
+    { path: "/users", component: userlist },
+    { path: "/rights", component: rightlist }
   ]
   },
 
@@ -31,6 +33,7 @@ const router = new VueRouter({
   routes
 })
 
+// 全局导航守卫
 router.beforeEach((to, from, next) => {
   if(to.path.indexOf('index') != -1){
     if(window.localStorage.getItem('token')){

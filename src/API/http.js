@@ -50,8 +50,8 @@ export const users = ({ query, pagenum, pagesize }) => {
 }
 
 // 添加用户
-export const addUsers = ({username,password,email,mobile})=>{
-  return http.post('users',{
+export const addUsers = ({ username, password, email, mobile }) => {
+  return http.post('users', {
     username,
     password,
     email,
@@ -60,31 +60,36 @@ export const addUsers = ({username,password,email,mobile})=>{
 }
 
 // 修改用户状态
-export const changeStateBtn = (uid,type)=>{ 
+export const changeStateBtn = (uid, type) => {
   return http.put(`users/${uid}/state/${type}`)
 }
 
 // 操作1:编辑用户(先渲染然后再提交)
-export const editUser = ({id,email,mobile})=>{
-  return http.put(`users/${id}`,{
+export const editUser = ({ id, email, mobile }) => {
+  return http.put(`users/${id}`, {
     email,
     mobile
   })
 }
 
 // 操作2: 删除用户
-export const delUser = (id) =>{
+export const delUser = (id) => {
   return http.delete(`users/${id}`)
 }
 
 // 操作3:修改角色信息之 获取所有角色列表
-export const getAllRoles = ()=>{
+export const getAllRoles = () => {
   return http.get('roles')
 }
 
 // 操作3: 修改用户角色
-export const changeRole = ({id,rid})=>{
-  return http.put(`users/${id}/role`,{
+export const changeRole = ({ id, rid }) => {
+  return http.put(`users/${id}/role`, {
     rid
   })
+}
+
+// 获取所有权限列表{
+export const getRightList = (type) => {
+  return http.get(`rights/${type}`)
 }

@@ -80,7 +80,7 @@
       </div>
     </el-dialog>
 
-    <!-- 操作1:编辑用户的弹出框 -->
+    <!-- 操作1:编辑用户的弹出框 饿了么的dialog对话框 -->
     <el-dialog title="修改用户" :visible.sync="editUserVisible">
       <el-form :model="editform" :rules="rules">
       <el-form-item label="用户名" prop="username" label-width="100px">
@@ -100,15 +100,41 @@
     </el-dialog>
 
     <!-- 操作3: 编辑用户角色信息 -->
-    
+    <el-dialog title="分配角色" :visible.sync="roleFormVisible">
+      <el-form :model="roleform">
+        <el-form-item label="当前用户" label-width="100px">
+          <span>{{roleform.username}}</span>
+        </el-form-item>
+        <el-form-item label="请选择角色" label-width="100px">
+          <el-select v-model="roleform.rid" placeholder="请选择角色">
+            <el-option v-for="item in roleList" :label="item.roleName" :value="item.id"></el-option>
+          </el-select>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="roleFormVisible = false">取 消</el-button>
+        <el-button type="primary" @click="submitChangeRole">确 定</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
 <script>
-import { users,addUsers,changeStateBtn,editUser,delUser } from "../API/http";
+import { users,addUsers,changeStateBtn,editUser,delUser,getAllRoles,changeRole } from "../API/http";
 export default {
+  name:'userlist',
   data() {
     return {
+      // 修改用户角色所需数据
+      // 准备一个用来发请求后 拿到的角色列表
+      roleList:[],
+      roleFormVisible:false,
+      // 发请求需要的数据
+      roleform:{
+        username:'',
+        rid:0,
+        id:0
+      },
       // 编辑用户所需数据
       editUserVisible:false,
       editform:{
@@ -161,11 +187,40 @@ export default {
   created() {
     // 发请求
     this.getUsers();
+
+    // 这是操作3: 页面一进来就发请求获取所有用户的角色列表
+    // 先发请求 获取所有角色列表渲染到option
+      getAllRoles().then(res=>{
+        // console.log(res);
+        this.roleList = res.data.data;
+      })
   },
   methods: {
     // 操作3:修改用户角色
     doChangeRole(row){
-
+      // 遍历roleList 
+      let rid = 0;
+      for(let i = 0;i<this.roleList.length;i++){
+        if(this.roleList[i].roleName==row.role_name){
+          rid = this.roleList[i].id;
+        }
+      }
+      this.roleFormVisible=true;
+      this.roleform.username = row.username;
+      this.roleform.id = row.id;
+      //成功从roleList那里拿到rid
+      this.roleform.rid = rid;
+    },
+    // 修改角色的按钮提交
+    submitChangeRole(){
+      changeRole(this.roleform).then(res=>{
+        // console.log(res)
+        if(res.data.meta.status==200){
+          this.$message.success(res.data.meta.msg)
+          this.roleFormVisible=false;
+          this.getUsers();
+        }
+      })
     },
     // 操作2: 删除用户
     doDelete(row){

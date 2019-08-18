@@ -76,3 +76,15 @@ export const editUser = ({id,email,mobile})=>{
 export const delUser = (id) =>{
   return http.delete(`users/${id}`)
 }
+
+// 操作3:修改角色信息之 获取所有角色列表
+export const getAllRoles = ()=>{
+  return http.get('roles')
+}
+
+// 操作3: 修改用户角色
+export const changeRole = ({id,rid})=>{
+  return http.put(`users/${id}/role`,{
+    rid
+  })
+}

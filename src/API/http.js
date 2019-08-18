@@ -48,3 +48,13 @@ export const users = ({ query, pagenum, pagesize }) => {
     // }
   })
 }
+
+// 添加用户
+export const addUsers = ({username,password,email,mobile})=>{
+  return http.post('users',{
+    username,
+    password,
+    email,
+    mobile
+  })
+}

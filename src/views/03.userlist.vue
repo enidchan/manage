@@ -17,7 +17,7 @@
 
     <!-- 添加用户按钮 -->
     <el-col :span="18">
-      <el-button type="success" plain>添加用户</el-button>
+      <el-button @click="addUserVisible=true" type="success" plain>添加用户</el-button>
     </el-col>
 
     <!-- 表格 -->
@@ -56,14 +56,66 @@
       layout="total, sizes, prev, pager, next, jumper"
       :total="total"
     ></el-pagination>
+
+    <!-- 添加用户 -->
+    <el-dialog title="添加用户" :visible.sync="addUserVisible">
+  <el-form :model="addform" :rules="rules" ref="addUserForm">
+    <el-form-item label="用户名" prop="username" label-width="100px">
+      <el-input type="text" v-model="addform.username" autocomplete="off"></el-input>
+    </el-form-item>
+    <el-form-item label="密码" prop="password" label-width="100px">
+        <el-input type="password" v-model="addform.password" autocomplete="off"></el-input>
+    </el-form-item>
+    <el-form-item label="邮箱" label-width="100px">
+      <el-input v-model="addform.email" autocomplete="off"></el-input>
+    </el-form-item>
+      <el-form-item label="电话" label-width="100px">
+      <el-input v-model="addform.mobile" autocomplete="off"></el-input>
+    </el-form-item>
+  </el-form>
+  <div slot="footer" class="dialog-footer">
+    <el-button @click="addUserVisible = false">取 消</el-button>
+    <el-button type="primary" @click="submitAdd('addUserForm')">确 定</el-button>
+  </div>
+</el-dialog>
+
   </div>
 </template>
 
 <script>
-import { users } from "../API/http";
+import { users,addUsers } from "../API/http";
 export default {
   data() {
     return {
+      // 添加用户所需数据
+      addUserVisible:false,
+      addform:{
+        username:"",
+        password:"",
+        email:"",
+        mobile:""
+      },
+       // 表单的验证规则
+      rules: {
+        username: [
+          { required: true, message: "请输入用户名", trigger: "blur" },
+          {
+            min: 3,
+            max: 6,
+            message: "用户名在 3 到 6 个字符",
+            trigger: "change"
+          }
+        ],
+        password: [
+          { required: true, message: "请输入密码", trigger: "blur" },
+          {
+            min: 6,
+            max: 13,
+            message: "密码在 6 到 13 个字符",
+            trigger: "change"
+          }
+        ]
+      },
       // 表格数据(必须是数组,才会被内部的v-for执行解析出来)
       tableData: [],
       // 数据总数
@@ -81,7 +133,26 @@ export default {
     this.getUsers();
   },
   methods: {
-
+    // 添加用户按钮的点击事件
+    submitAdd(formName) {
+      this.$refs[formName].validate((valid) => {
+          if (valid) {
+            // 发请求去添加用户
+            addUsers(this.addform).then(res=>{
+              console.log(res);
+              if(res.data.meta.status==201){
+                this.$message.success(res.data.meta.msg)
+                this.addUserVisible=false
+              }else{
+                this.$message.error(res.data.meta.msg)
+              }
+            })
+          } else {
+            console.log('error submit!!');
+            return false;
+          }
+      });
+    },
     // 封装获取用户信息
     getUsers(){
       // 做一下判断,假设输入框输入参数的话,就让当前页为1

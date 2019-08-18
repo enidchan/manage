@@ -21,27 +21,28 @@
     </el-col>
 
     <!-- 表格 -->
-    <el-table :data="tableData" @current-change="handleCurrentChange" style="width: 100%" border>
-      <el-table-column type="index" width="50"></el-table-column>
+    <el-table :data="tableData" style="width: 1200px" border>
+      <el-table-column type="index" width="50px"></el-table-column>
       <el-table-column property="username" label="姓名"></el-table-column>
       <el-table-column property="email" label="邮箱"></el-table-column>
       <el-table-column property="mobile" label="电话"></el-table-column>
 
       <el-table-column label="用户状态">
-      <!-- switch开关 用自定义列包裹起来-->
-        <template slot-scope="scope">
-          <!-- scope.row是要绑定的数据, 自定义列的template和绑定v-model两者缺一不可 -->
-           <el-switch v-model="scope.row.mg_state" active-color="#13ce66" inactive-color="#ff4949"></el-switch>
-        </template>
-      </el-table-column>
+        <!-- switch开关 用自定义列包裹起来-->
+          <template slot-scope="scope">
+            <!-- scope.row是要绑定的数据, 自定义列的template和绑定v-model两者缺一不可 -->
+            <el-switch @change="changeUserState(scope.row)" v-model="scope.row.mg_state" active-color="#13ce66" inactive-color="#ff4949"></el-switch>
+          </template>
+        </el-table-column>
 
-      <el-table-column label="操作">
-        <template slot-scope="scope">
-          <el-button type="primary" icon="el-icon-edit" plain></el-button>
-          <el-button type="danger" icon="el-icon-delete" plain></el-button>
-          <el-button type="warning" icon="el-icon-check" plain></el-button>
-        </template>
-      </el-table-column>
+        <el-table-column label="操作">
+          <template slot-scope="scope">
+            <el-button @click="doEditUser(scope.row)" type="primary" icon="el-icon-edit" plain></el-button>
+            <el-button @click="doDelete(scope.row)" type="danger" icon="el-icon-delete" plain></el-button>
+            <el-button @click="doChangeRole(scope.row)" type="warning" icon="el-icon-check" plain></el-button>
+          </template>
+        </el-table-column>
+
       </el-table-column>
 
     </el-table>
@@ -57,36 +58,65 @@
       :total="total"
     ></el-pagination>
 
-    <!-- 添加用户 -->
+    <!-- 添加用户的弹出框 -->
     <el-dialog title="添加用户" :visible.sync="addUserVisible">
-  <el-form :model="addform" :rules="rules" ref="addUserForm">
-    <el-form-item label="用户名" prop="username" label-width="100px">
-      <el-input type="text" v-model="addform.username" autocomplete="off"></el-input>
-    </el-form-item>
-    <el-form-item label="密码" prop="password" label-width="100px">
-        <el-input type="password" v-model="addform.password" autocomplete="off"></el-input>
-    </el-form-item>
-    <el-form-item label="邮箱" label-width="100px">
-      <el-input v-model="addform.email" autocomplete="off"></el-input>
-    </el-form-item>
-      <el-form-item label="电话" label-width="100px">
-      <el-input v-model="addform.mobile" autocomplete="off"></el-input>
-    </el-form-item>
-  </el-form>
-  <div slot="footer" class="dialog-footer">
-    <el-button @click="addUserVisible = false">取 消</el-button>
-    <el-button type="primary" @click="submitAdd('addUserForm')">确 定</el-button>
-  </div>
-</el-dialog>
+      <el-form :model="addform" :rules="rules" ref="addUserForm">
+      <el-form-item label="用户名" prop="username" label-width="100px">
+          <el-input type="text" v-model="addform.username" autocomplete="off"></el-input>
+      </el-form-item>
+      <el-form-item label="密码" prop="password" label-width="100px">
+          <el-input type="password" v-model="addform.password" autocomplete="off"></el-input>
+      </el-form-item>
+      <el-form-item label="邮箱" label-width="100px">
+        <el-input v-model="addform.email" autocomplete="off"></el-input>
+      </el-form-item>
+        <el-form-item label="电话" label-width="100px">
+        <el-input v-model="addform.mobile" autocomplete="off"></el-input>
+      </el-form-item>
+        </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="addUserVisible = false">取 消</el-button>
+        <el-button type="primary" @click="submitAddBtn('addUserForm')">确 定</el-button>
+      </div>
+    </el-dialog>
 
+    <!-- 操作1:编辑用户的弹出框 -->
+    <el-dialog title="修改用户" :visible.sync="editUserVisible">
+      <el-form :model="editform" :rules="rules">
+      <el-form-item label="用户名" prop="username" label-width="100px">
+          <el-input type="text" v-model="editform.username" autocomplete="off" disabled></el-input>
+      </el-form-item>
+      <el-form-item label="邮箱" label-width="100px">
+        <el-input v-model="editform.email" autocomplete="off"></el-input>
+      </el-form-item>
+        <el-form-item label="电话" label-width="100px">
+        <el-input v-model="editform.mobile" autocomplete="off"></el-input>
+      </el-form-item>
+        </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="editUserVisible = false">取 消</el-button>
+        <el-button type="primary" @click="submitEditBtn">确 定</el-button>
+      </div>
+    </el-dialog>
+
+    <!-- 操作3: 编辑用户角色信息 -->
+    
   </div>
 </template>
 
 <script>
-import { users,addUsers } from "../API/http";
+import { users,addUsers,changeStateBtn,editUser,delUser } from "../API/http";
 export default {
   data() {
     return {
+      // 编辑用户所需数据
+      editUserVisible:false,
+      editform:{
+        username:'',
+        email:'',
+        mobile:'',
+        id:0
+      },
       // 添加用户所需数据
       addUserVisible:false,
       addform:{
@@ -133,16 +163,81 @@ export default {
     this.getUsers();
   },
   methods: {
+    // 操作3:修改用户角色
+    doChangeRole(row){
+
+    },
+    // 操作2: 删除用户
+    doDelete(row){
+      // console.log(row)
+        // 这里放了饿了么ui的messageBox弹框 确认一下
+        this.$confirm('此操作将永久删除, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消', 
+          type: 'warning'
+        }).then(() => {
+          this.$message({
+            type: 'success',
+            message: '删除成功!'
+          });
+          delUser(row.id).then(res=>{
+            this.getUsers();
+          })
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          });          
+        });
+    },
+    // 操作1: 编辑用户状态
+    doEditUser(row){
+      this.editUserVisible=true
+      // console.log(row);
+      // 根据用户id查询信息,渲染在编辑页面
+      this.editform.username = row.username;
+      this.editform.email = row.email;
+      this.editform.mobile = row.mobile;
+      this.editform.id = row.id
+    },
+    // 操作1:编辑用户的确定按钮点击事件
+    submitEditBtn(){
+       // 发请求修改用户信息
+      editUser(this.editform).then(res=>{
+        // console.log(res);
+        if(res.data.meta.status==200){
+          this.getUsers();
+          this.$message.success(res.data.meta.msg);
+          this.editUserVisible=false;
+        }else{
+          this.$message.error(res.data.meta.msg);
+        }
+      })
+    },
+    // 用户状态改变switch
+    changeUserState(row){
+      // console.log(row);
+      // 发请求
+      changeStateBtn(row.id,row.mg_state).then(res=>{
+        // console.log(res);
+        if(res.data.meta.status==200){
+          this.$message.success(res.data.meta.msg)
+        }else{
+          this.$message.error(res.data.meta.msg)
+        }
+      })
+    },
     // 添加用户按钮的点击事件
-    submitAdd(formName) {
+    submitAddBtn(formName) {
       this.$refs[formName].validate((valid) => {
           if (valid) {
             // 发请求去添加用户
             addUsers(this.addform).then(res=>{
-              console.log(res);
+              // console.log(res);
               if(res.data.meta.status==201){
                 this.$message.success(res.data.meta.msg)
                 this.addUserVisible=false
+                this.getUsers()
               }else{
                 this.$message.error(res.data.meta.msg)
               }

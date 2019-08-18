@@ -58,3 +58,21 @@ export const addUsers = ({username,password,email,mobile})=>{
     mobile
   })
 }
+
+// 修改用户状态
+export const changeStateBtn = (uid,type)=>{ 
+  return http.put(`users/${uid}/state/${type}`)
+}
+
+// 操作1:编辑用户(先渲染然后再提交)
+export const editUser = ({id,email,mobile})=>{
+  return http.put(`users/${id}`,{
+    email,
+    mobile
+  })
+}
+
+// 操作2: 删除用户
+export const delUser = (id) =>{
+  return http.delete(`users/${id}`)
+}

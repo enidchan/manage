@@ -11,20 +11,25 @@ import login from "../views/01.login.vue"
 import index from "../views/02.index.vue"
 import userlist from "../views/03.userlist.vue"
 import rightlist from "../views/04.rightlist.vue"
+import rolelist from "../views/05.rolelist.vue"
+import goodlist from "../views/06.goodlist.vue"
 
 // 路由规则
 const routes = [
-  { path:"/login", component: login },
-  { path:"/index", component: index,
-  children:[
-    { path: "/users", component: userlist },
-    { path: "/rights", component: rightlist }
-  ]
+  { path: "/login", component: login },
+  {
+    path: "/index", component: index,
+    children: [
+      { path: "/users", component: userlist },
+      { path: "/rights", component: rightlist },
+      { path: "/roles", component: rolelist },
+      { path: "/goods", component: goodlist },
+    ]
   },
 
   // 重定向
-  { path:"", redirect: "/login" },
-  
+  { path: "", redirect: "/login" },
+
 ]
 
 
@@ -35,19 +40,21 @@ const router = new VueRouter({
 
 // 全局导航守卫
 router.beforeEach((to, from, next) => {
-  if(to.path.indexOf('index') != -1){
-    if(window.localStorage.getItem('token')){
+  if (to.path.indexOf('index') != -1) {
+    if (window.localStorage.getItem('token')) {
       next();
-    }else{
-      // 没有token的话就提示未登录并返回login
+    } else {
+      // 提示请先登录并且跳转到登录页
       Vue.prototype.$message.error('请先登录')
-      router.push('/login')
+      router.push('login')
     }
-  }else{
-    next();
+  } else {
+    next()
   }
 })
 
 // 把路由暴露出去
 export default router
+
+
 

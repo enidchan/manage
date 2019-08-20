@@ -54,7 +54,7 @@
       :total="total"
     ></el-pagination>
 
-    <!-- 添加用户的弹出框 -->
+    <!-- 添加用户的弹出框 饿了么的对话框-->
     <el-dialog title="添加用户" :visible.sync="addUserVisible">
       <el-form :model="addform" :rules="rules" ref="addUserForm">
       <el-form-item label="用户名" prop="username" label-width="100px">

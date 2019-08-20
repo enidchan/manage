@@ -64,7 +64,7 @@ export const changeStateBtn = (uid, type) => {
   return http.put(`users/${uid}/state/${type}`)
 }
 
-// 操作1:编辑用户(先渲染然后再提交)
+// 编辑用户(先渲染然后再提交)
 export const editUser = ({ id, email, mobile }) => {
   return http.put(`users/${id}`, {
     email,
@@ -72,17 +72,17 @@ export const editUser = ({ id, email, mobile }) => {
   })
 }
 
-// 操作2: 删除用户
+// 删除用户
 export const delUser = (id) => {
   return http.delete(`users/${id}`)
 }
 
-// 操作3:修改角色信息之 获取所有角色列表
+// 获取所有角色列表
 export const getAllRoles = () => {
   return http.get('roles')
 }
 
-// 操作3: 修改用户角色
+// 修改用户角色
 export const changeRole = ({ id, rid }) => {
   return http.put(`users/${id}/role`, {
     rid
@@ -92,4 +92,37 @@ export const changeRole = ({ id, rid }) => {
 // 获取所有权限列表{
 export const getRightList = (type) => {
   return http.get(`rights/${type}`)
+}
+
+// 权限列表: 删除角色指定权限
+export const delUserRight = (roleId, rightId) => {
+  return http.delete(`roles/${roleId}/rights/${rightId}`)
+}
+
+// 角色列表:角色授权
+export const changeRight = (roleId, rids) => {
+  return http.post(`roles/${roleId}/rights`, {
+    rids
+  })
+}
+
+// 角色列表: 编辑角色提交
+export const editRole = ({ id, roleName, roleDesc }) => {
+  return http.put(`roles/${id}`, {
+    roleName,
+    roleDesc
+  })
+}
+
+// 删除角色
+export const delRole = (id) => {
+  return http.delete(`roles/${id}`)
+}
+
+// 添加角色
+export const addRole = ({roleName,roleDesc})=>{
+  return http.post('roles',{
+    roleName,
+    roleDesc
+  })
 }

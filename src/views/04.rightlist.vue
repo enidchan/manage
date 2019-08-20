@@ -24,7 +24,7 @@ export default {
   created() {
     // 发请求获取所有权限列表
     getRightList('list').then(res => {
-      console.log(res);
+      // console.log(res);
       this.tableData = res.data.data;
       // 把0,1,2 做判断 改成一级,二级,三级
       let list = res.data.data;

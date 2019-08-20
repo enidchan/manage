@@ -17,6 +17,10 @@ Vue.component('bread',bread)
 // 导入封装好的路由
 import router from "./router/router"
 
+// 导入moment
+import moment from "moment"
+Vue.use(moment);
+
 // navigatiDuplicated的报错
 const originalPush = router.push
 router.push = function push(location) {

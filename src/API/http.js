@@ -12,7 +12,7 @@ export default http;
 
 // axios请求拦截
 http.interceptors.request.use(function (config) {
-  // 发请求前调用
+  // 发请求前做的事
   config.headers.Authorization = window.localStorage.getItem('token');
   return config;
 }, function (error) {
@@ -124,5 +124,16 @@ export const addRole = ({roleName,roleDesc})=>{
   return http.post('roles',{
     roleName,
     roleDesc
+  })
+}
+
+// 商品列表(get请求带参数的要记得加params)
+export const goodList = ({query,pagenum,pagesize})=>{
+  return http.get('goods',{
+    params: {
+      query,
+      pagenum,
+      pagesize
+    }
   })
 }

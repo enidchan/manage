@@ -23,13 +23,9 @@
       <el-table-column property="goods_name" label="商品名称" width="600px"></el-table-column>
       <el-table-column property="goods_price" label="商品价格(元)" width="120px"></el-table-column>
       <el-table-column property="goods_weight" label="商品重量" width="120px"></el-table-column>
-      <el-table-column
-        v-model="tableData.add_time"
-        property="add_time"
-        label="创建时间"
-        width="200px"
-        ref="addTime"
-      ></el-table-column>
+      <el-table-column label="创建时间" width="200px">
+        <template slot-scope="scope">{{ scope.row.add_time | formatTime }}</template>
+      </el-table-column>
 
       <el-table-column label="操作">
         <template slot-scope="scope">
@@ -75,7 +71,7 @@ export default {
     // 页面一打开就显示表格的商品数据
     this.getGoodList();
   },
-  
+
   methods: {
     // 页码改变事件
     handleCurrentChange(page) {
@@ -97,6 +93,12 @@ export default {
         this.total = res.data.data.total;
       });
     }
+  },
+  filters: {
+    // 时间戳的格式转换事件(过滤器)
+    formatTime(val) {
+　　　　return moment.unix(val).format("YYYY-MM-DD HH:mm:ss")
+　　}
   }
 };
 </script>

@@ -1,5 +1,7 @@
 // 导入axios,设置axios基地址和cookie问题
 import axios from "axios"
+import Vue from "vue"
+import router from '../router/router'
 
 // axios.defaults.withCredentials = true
 // axios.defaults.baseURL= "http://localhost:8888/api/private/v1/"
@@ -13,12 +15,34 @@ export default http;
 // axios请求拦截
 http.interceptors.request.use(function (config) {
   // 发请求前做的事
+  // 发请求之前把flag改为false
+  flag = false;
   config.headers.Authorization = window.localStorage.getItem('token');
   return config;
 }, function (error) {
   // Do something with request error
   return Promise.reject(error);
 });
+
+// 用开关思想解决弹框多次的问题
+let flag = false
+// 响应拦截
+http.interceptors.response.use(function (response) {
+  if(flag){
+    return response
+  }
+  // 在这里做判断,response是响应回来的所有数据
+  if(response.data.meta.status==400 && response.data.meta.msg=="无效token"){
+    Vue.prototype.$message('请先登录!')
+    flag = true
+    router.push('/login')
+  }
+  return response;
+}, function (error) {
+  // Do something with response error
+  return Promise.reject(error);
+});
+
 
 
 // 专门封装一个用来登录的方法

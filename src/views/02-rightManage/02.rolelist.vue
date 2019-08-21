@@ -128,7 +128,7 @@ import {
   editRole,
   delRole,
   addRole
-} from "../API/http";
+} from "../../API/http";
 
 export default {
   name: "roles",

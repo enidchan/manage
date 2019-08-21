@@ -50,7 +50,7 @@
 
 <script>
 import moment from "moment";
-import { goodList } from "../API/http";
+import { goodList } from "../../API/http";
 
 export default {
   name: "goods",

@@ -13,7 +13,7 @@
 </template>
 
 <script>
-import {getRightList} from "../API/http";
+import {getRightList} from "../../API/http";
 
 export default {
   data() {

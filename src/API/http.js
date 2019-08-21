@@ -24,7 +24,7 @@ http.interceptors.request.use(function (config) {
   return Promise.reject(error);
 });
 
-// 用开关思想解决弹框多次的问题
+// 用开关思想解决弹框多次的问题(router.js里有了导航守卫配合meta和token,所以就不用请求拦截)
 let flag = false
 // 响应拦截
 http.interceptors.response.use(function (response) {
@@ -158,6 +158,15 @@ export const goodList = ({query,pagenum,pagesize})=>{
       query,
       pagenum,
       pagesize
+    }
+  })
+}
+
+// 获取商品分类
+export const categories = (type)=>{
+  return http.get('categories',{
+    params:{
+      type
     }
   })
 }

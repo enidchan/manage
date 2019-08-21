@@ -7,7 +7,7 @@ import VueRouter from "vue-router"
 Vue.use(VueRouter)
 
 // 导入一个请求来验证token的
-import { menus } from "../API/http"
+// import { menus } from "../API/http.js"
 
 // 导入组件
 import login from "../views/login.vue"
@@ -16,6 +16,7 @@ import userlist from "../views/01-userManage/userlist.vue"
 import rightlist from "../views/02-rightManage/01.rightlist.vue"
 import rolelist from "../views/02-rightManage/02.rolelist.vue"
 import goodlist from "../views/03-goodsManage/01.goodlist.vue"
+import categories from "../views/03-goodsManage/03.categories.vue"
 
 // 路由规则
 const routes = [
@@ -27,6 +28,7 @@ const routes = [
       { path: "/rights", component: rightlist, meta: { needLogin: true } },
       { path: "/roles", component: rolelist, meta: { needLogin: true } },
       { path: "/goods", component: goodlist, meta: { needLogin: true } },
+      { path: "/categories", component: categories, meta: { needLogin: true } },
     ]
   },
 
@@ -48,8 +50,7 @@ const router = new VueRouter({
 //       if (res.data.meta.status == 400 && res.data.meta.msg == "无效token") {
 //         Vue.prototype.$message('请先登录!')
 //         router.push('/login')
-//       }else{
-//         next()
+//       }else{ //         next()
 //       }
 //     })
 //   } else {
